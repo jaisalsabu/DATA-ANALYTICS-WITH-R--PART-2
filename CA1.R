@@ -248,8 +248,9 @@ summary(heart_attack_analysis)
 #--------------------------------------------------------------------------------------------------------------------------------
 
 # Q1. Is there any relation between Gender and Chance of having heart attack ?
-#     H0 : Gender has no impact on chances of having heart attack
-#     H1 : Gender has an impact on chances of having heart attack
+
+#H0 : Gender has no impact on chances of having heart attack
+#H1 : Gender has an impact on chances of having heart attack
 
 #ANALYSIS OF Q1
 #The variables we consider for the research question is Gender and Target variable
@@ -323,6 +324,7 @@ res$p.value
 #OUTPUT - We find out that cholesterol doesnot have an effect on the maximum heart rate a person has achieved
 
 #Q3.Does age have any relation to cholesterol levels in a patient?
+
 #H0 - Age does not have any relation to Cholesterol levels
 #H1 - Age has relation to cholesterol levels
 
@@ -361,4 +363,67 @@ res$p.value
 
 #OUTPUT - The age has a impact on the cholesterol levels in patients
 
-#Q4 - 
+#Q4 - Does Gender affect the resting blood pressure of a patient ?
+
+#H0 : Gender has no effect on the resting blood pressure of patient
+#H1 : Gender has a effect on the resting blood pressure of patient
+
+#Here,  our dependent variable is resting blood pressure
+#and the independent variable is gender
+
+#we have to take a normality test for our dependent variable 
+#we perform the shapiro-wilk test
+# Null hypothesis: the data are normally distributed
+# Alternative hypothesis: the data are not normally distributed
+
+normality_test_restingbp<- shapiro.test(heart_attack_analysis$Resting_blood_pressure)
+normality_test_restingbp$p.value
+
+#the p-value is 1.458097e-06 which is less that 0.05
+#the resting blood pressure variable is not normally distributed
+
+#so we will be selecting man whitney test 
+heart_attack_analysis$Resting_blood_pressure
+wilcox.test(Resting_blood_pressure ~ Gender, data=heart_attack_analysis)
+#from the Mann Whitney Wilcoxcon Test we get a p value of 0.3579
+#the p value is higher than the significance of 0.05 
+#so we reject the alternate hypothesis and accept the null hypothesis.
+
+#OUTPUT - Gender has no impact or effect on the resting blood pressure of the patient
+
+#Q5 - Does the type of Chest Pain have a effect on the chances of having a heart attack?
+
+#H0 : Chest Pain and Heart attack are not related to each other
+#H1 : Chest Pain and Heart attack are related to each other 
+
+#The variables we consider for the research question is Chest Pain and Heart attack variable
+#The Chest Pain variable is a categorical variable with 4 Values 
+#The Heart attack variable is a categorical variable with 2 Values
+#Here our Dependent Variable is Target (i.e Chances of having heart attack)
+#and our Independent Variable is Chest Pain 
+
+#Since both our variables are Categorical we will be selecting  Pearsons Chi- Squared Test 
+#we create a way table for much clear understanding of the situation
+cptar <-table(heart_attack_analysis$Chest_pain, heart_attack_analysis$Target)
+cptar
+chisq.test(cptar)
+
+#we can also set correct = FALSE to turn off Yates Continuity correction
+chisq.test(table(heart_attack_analysis$Chest_pain, heart_attack_analysis$Target), correct = FALSE)
+
+#we get a p value of less than the value of significance(0.05) 
+#X-squared = 23.914
+#df = 1
+#p value < 2.2e-16
+#From the results of the test we understand that the p value is less than that 
+#of the significant value 0.05, 
+#We reject the null hypothesis and accept the alternate hypothesis
+
+#OUTPUT - The type of Chest pain is related to the target variable(chance of having heart attack)
+
+#**********************************************************************************************************************************************
+#we reject the null hypothesis and accept the alternate hypothesis
+
+# OUTPUT : From our data we understand that the gender of a patient has an impact 
+#on the chances of having a heart attack
+
