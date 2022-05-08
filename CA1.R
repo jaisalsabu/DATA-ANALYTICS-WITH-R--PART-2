@@ -62,7 +62,7 @@ min_age
 hist(heartattack$age, main = "Histogram for age", xlab = "Age")
 summary(heartattack$age)
 #we use a boxplot for the age variable
-boxplot(heartattack$age)
+boxplot(heartattack$age, ylab= "Age in Years")
 
 #---------------------------------------------------------------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ print(female)
 table(heartattack$sex)
 #using bar plot to understand the sex variable
 sexcounts <- table(heartattack$sex)
-barplot(sexcounts, main="sex")
+barplot(sexcounts, main="sex", ylab = "no of females", xlab = "Gender")
 #analysis- the number of males are higher in the data set than females 
 
 #---------------------------------------------------------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ print(cptype4)
 table(heartattack$cp)
 #using bar plot to understand the chest pain (cp) variable
 cpcounts <- table(heartattack$cp)
-barplot(cpcounts, main="chest pain")
+barplot(cpcounts, main="chest pain", xlab = "Types of chest pain", ylab ="No of patients")
 #analysis- Most number of patients (143) face type 1 chest pain (typical angina) 
 #a very few patients (23) have type 4 chest pain (asymptomatic) 
 #type 2 chest pain is experienced by 50 patients
@@ -213,7 +213,6 @@ exang <- table(heartattack$exng)
 barplot(exang, main="Exercise Induced Angina")
 #analysis - Most of the patients do not have exercise induced angina 
 
-#BI-VARIATE ANALYSIS
 
 #---------------------------------------------------------------------------------------------------------------------------------
 
@@ -336,7 +335,7 @@ res$p.value
 # Null hypothesis: the data are normally distributed
 # Alternative hypothesis: the data are not normally distributed
 
-#normality for maximum heart rate
+#normality for cholesterol
 normality_test_cholesterol<- shapiro.test(heart_attack_analysis$Cholesterol)
 normality_test_cholesterol$p.value
 #the p value is 5.364848e-09, which is less than the value of significance 0.05
@@ -422,8 +421,4 @@ chisq.test(table(heart_attack_analysis$Chest_pain, heart_attack_analysis$Target)
 #OUTPUT - The type of Chest pain is related to the target variable(chance of having heart attack)
 
 #**********************************************************************************************************************************************
-#we reject the null hypothesis and accept the alternate hypothesis
-
-# OUTPUT : From our data we understand that the gender of a patient has an impact 
-#on the chances of having a heart attack
 
