@@ -48,7 +48,7 @@ install.packages("viridis")
 library(ggplot2)
 library(viridis)
 
-#-------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------
 
 #UNI-VARIATE ANALYSIS
 
@@ -64,7 +64,7 @@ summary(heartattack$age)
 #we use a boxplot for the age variable
 boxplot(heartattack$age)
 
-#-------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------
 
 #sex
 #Since we do not have a information about the sex 
@@ -80,8 +80,7 @@ sexcounts <- table(heartattack$sex)
 barplot(sexcounts, main="sex")
 #analysis- the number of males are higher in the data set than females 
 
-#-------------------------------------------------------------------------------
-
+#---------------------------------------------------------------------------------------------------------------------------------
 #cp - Chest pain(types)
 #4 types
 cptype1 <- subset( heartattack, cp == "0")
@@ -102,7 +101,7 @@ barplot(cpcounts, main="chest pain")
 #type 2 chest pain is experienced by 50 patients
 #type 3 chest pain is experienced by 87 patients
 
-#-------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------
   
 #trtbps
 #finding out the maximum and minimum resting blood pressure
@@ -122,7 +121,7 @@ plot(trtbps,
      main="Density plot for resting blood pressure",
      xlab = "Resting blood pressure")
 
-#-------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------
 
 #chol (cholesterol)
 #finding out the maximum and cholesterol
@@ -143,7 +142,7 @@ plot(chol,
 #analysis - Cholesterol value in most patients is between 200 and 280.
 # Values after 380 are to be considered as outliers.
 
-#-------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------
 
 #fbs (fasting blood sugar)
 #if fasting blood sugar more than 120md/dl the value is 1(True) or else 0(False)
@@ -160,7 +159,7 @@ barplot(fbsplot, main="Fasting Blood Sugar")
 #the blood glucose levels of majority of patients is below 120mg/dl
 #15% patients have a high blood glucose level
 
-#-------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------
 
 #restecg(resting electrocardiographic results)
 restecg0 <- subset( heartattack, restecg == "0")
@@ -179,7 +178,7 @@ barplot(restecgplot, main="resting electrocardiographic results")
 #~ 50.2% of patients have ST-T wave abnormality
 #~48.5% of patients have a normal resting electrocardiogram result
 
-#-------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------
 
 #thalachh (max heart rate)
 max_heartrate <- max(heartattack$thalachh)
@@ -200,7 +199,7 @@ plot(restecgplot,
 #analysis - maximum heart rate achieved in most patients is between 145 and 170. 
 
 
-#-------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------
 
 #exng (Angina induced Exercise)
 exng0 <- subset( heartattack, exng == "0")
@@ -216,7 +215,7 @@ barplot(exang, main="Exercise Induced Angina")
 
 #BI-VARIATE ANALYSIS
 
-#-------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------
 
 #PART 4 _ DATA TRANSFORMATION
 #we take a look at the column names 
@@ -239,7 +238,127 @@ heart_attack_analysis <- subset(heartattack, select = -c(oldpeak, slp, caa, thal
 heart_attack_analysis
 #names of the columns in new data frame 
 names(heart_attack_analysis)
+#summary of new dataframe
+summary(heart_attack_analysis)
+
+#--------------------------------------------------------------------------------------------------------------------------------
 
 # PART 5 - HYPOTHESIS TESTING 
 
-# Q1.  
+#--------------------------------------------------------------------------------------------------------------------------------
+
+# Q1. Is there any relation between Gender and Chance of having heart attack ?
+#     H0 : Gender has no impact on chances of having heart attack
+#     H1 : Gender has an impact on chances of having heart attack
+
+#ANALYSIS OF Q1
+#The variables we consider for the research question is Gender and Target variable
+#The Gender variable is a categorical variable with 2 Values 
+#The Target variable is a categorical variable with 2 Values
+#Here our Dependent Variable is Target (i.e Chances of having heart attack)
+#and our Independent Variable is Gender (i.e Male (1) or Female(0)) 
+
+#Since both our variables are Categorical we will be selecting  Pearsons Chi- Squared Test 
+#we create a way table for much clear understanding of the situation
+gentar <-table(heart_attack_analysis$Gender, heart_attack_analysis$Target)
+gentar
+chisq.test(gentar)
+#we can also set correct = FALSE to turn off Yates Continuity correction
+chisq.test(table(heart_attack_analysis$Gender, heart_attack_analysis$Target), correct = FALSE)
+
+#we get a p value of less than the value of significance(0.05) 
+#X-squared = 23.914
+#df = 1
+#p value = 1.007e-06
+#we reject the null hypothesis and accept the alternate hypothesis
+
+# OUTPUT : From our data we understand that the gender of a patient has an impact 
+#on the chances of having a heart attack
+
+ 
+#Q2. Does cholesterol have an effect on the maximum heart rate a person has reached ?
+
+#H0 - Cholesterol does not have a effect on the maximum heart rate of a patient
+#H1 - Cholesterol has a effect on the maximum heart rate of a patient
+ 
+#our dependent variable is maximum heart rate and our independent variable is Cholesterol
+
+# we conduct a  normality test on our dependent variable 
+#Shapiro-Wilk test
+ # Null hypothesis: the data are normally distributed
+ # Alternative hypothesis: the data are not normally distributed
+#normality for maximum heart rate
+normality_test_maximumheartrate<- shapiro.test(heart_attack_analysis$Maximum_heart_rate)
+normality_test_maximumheartrate$p.value
+#the p value is 6.620818e-05, which is less than the value of significance 0.05
+#so we can conclude that our dependent variable is not normally distributed
+
+
+#normality for cholesterol
+normality_test_cholesterol<- shapiro.test(heart_attack_analysis$Cholesterol)
+normality_test_cholesterol$p.value
+#the p value is 5.364848e-09, which is less than the value of significance 0.05
+#so we can conclude that our dependent variable is not normally distributed
+
+
+#qqplot for maximum heart rate achieved
+qqnorm(heart_attack_analysis$Maximum_heart_rate,main="QQ plot for Maximum Heart Rate", pch=19, ylab = "Maximum Heart Rate")
+qqline(heart_attack_analysis$Maximum_heart_rate)
+
+#qqplot for cholesterol
+qqnorm(heart_attack_analysis$Cholesterol,main="QQ plot for Cholesterol",pch=19, ylab = "Cholesterol")
+qqline(heart_attack_analysis$Cholesterol)
+
+#Since our depndent and independent variables are continuous and they both are not normally distributed
+#we will be using spearmans rank correlation
+
+res <- cor.test(heart_attack_analysis$Cholesterol, heart_attack_analysis$Maximum_heart_rate, method = "spearman")         
+res
+res$p.value
+#The correlation coefficient between cholesterol and maximum heart rate achieved by a patient is -0.04676639
+
+#The p value of the test is 0.4173 which is more than the value of significance
+#we accept the null hypothesis and reject the alternate hypothesis 
+
+#OUTPUT - We find out that cholesterol doesnot have an effect on the maximum heart rate a person has achieved
+
+#Q3.Does age have any relation to cholesterol levels in a patient?
+#H0 - Age does not have any relation to Cholesterol levels
+#H1 - Age has relation to cholesterol levels
+
+#our dependent variable is cholesterol and our independent variable is age
+
+#we have to check the normality for out variables
+# we conduct a  normality test on our dependent variable 
+#Shapiro-Wilk test
+# Null hypothesis: the data are normally distributed
+# Alternative hypothesis: the data are not normally distributed
+
+#normality for maximum heart rate
+normality_test_cholesterol<- shapiro.test(heart_attack_analysis$Cholesterol)
+normality_test_cholesterol$p.value
+#the p value is 5.364848e-09, which is less than the value of significance 0.05
+#so we can conclude that our dependent variable is not normally distributed
+
+#normality for age
+normality_test_age<- shapiro.test(heart_attack_analysis$age)
+normality_test_age$p.value
+#the p value is 0.005798359, which is higher than the value of significance 0.05
+#so we can conclude that our independent variable is  normally distributed
+
+#since our dependent variable and independent variable is continuous 
+#our dependent variable is not normally distributed 
+#we have to use Spearmans rank correlation 
+res <- cor.test(heart_attack_analysis$age, heart_attack_analysis$Cholesterol, method = "spearman")         
+res
+res$p.value
+
+#from the spearmans rank correlation we can understand that  
+
+
+#The p value of the test is 0.0006099143 which is less than the value of significance
+#we reject the null hypothesis and accept the alternate hypothesis 
+
+#OUTPUT - The age has a impact on the cholesterol levels in patients
+
+#Q4 - 
