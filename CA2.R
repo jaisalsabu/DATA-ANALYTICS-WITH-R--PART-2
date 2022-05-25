@@ -129,13 +129,56 @@ boxplot(heartattack_prediction$trtbps,
 #from the boxplot for trtbps variable we understand that outliers are present in our dataset
 #to view the outliers we use the boxplot.stats()function
 boxplot.stats(heartattack_prediction$trtbps)$out
-detach(cars)
+detach(heartattack_prediction)
 par <- opar
 
 #since we have found out all the outliers in the variables
-#we have to rmove them from the data prepared for prediction.
-
-
+#we have to remove them from the data prepared for prediction.
+#from chol variable we have to remove 417,564,394,407,409 that were identified as outliers
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$chol!=417)
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$chol!=564)
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$chol!=394)
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$chol!=407)
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$chol!=409)
+#after removing the outliers , we will use the boxplot to confirm the deletion 
+boxplot(heartattack_prediction$chol,
+        main = "Cholesterol",
+        sub = paste("Outlier rows: ", boxplot.stats(heartattack_prediction$chol)$out)
+)
+#from the boxplot we have confirmed the absence of outliers
+#next we take the oldpeak variable
+#we have to remove 4.2, 6.2, 5.6, 4.2, 4.4
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$oldpeak!=4.2)
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$oldpeak!=6.2)
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$oldpeak!=5.6)
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$oldpeak!=4.4)
+#after removing the outliers , we confirm the deletion with boxplot
+boxplot(heartattack_prediction$oldpeak,
+        main = "Oldpeak",
+        sub = paste("Outlier rows: ", boxplot.stats(heartattack_prediction$oldpeak)$out)
+)
+#we have confirmed the deletion of outliers from oldpeak variable
+#next we take the thalachh variable
+#we have to remove 71
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$thalachh!=71)
+#we confirm this as we did for the earlier variables
+boxplot(heartattack_prediction$thalachh,
+        main = "Maximum heart rate",
+        sub = paste("Outlier rows: ", boxplot.stats(heartattack_prediction$thalachh)$out)
+)
+#we move on to the trtbps variable 
+#172, 178, 180, 200, 174, 192 are the outliers in this variable
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$trtbps!=172)
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$trtbps!=178)
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$trtbps!=180)
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$trtbps!=200)
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$trtbps!=174)
+heartattack_prediction <- subset(heartattack_prediction, heartattack_prediction$trtbps!=192)
+#confirming the deletion of outliers
+boxplot(heartattack_prediction$trtbps,
+        main = "Resting Blood Pressure",
+        sub = paste("Outlier rows: ", boxplot.stats(heartattack_prediction$trtbps)$out)
+)
 #-----------------------left here at 8:45 on  24-05-22 --------------------------------------
 #splitting the dataset
 set.seed(100)
